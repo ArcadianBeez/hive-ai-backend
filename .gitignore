@@ -1,0 +1,15 @@
+.env
+*.pyc
+__pycache__
+*/__pycache__
+venv/
+creds/
+.vscode/
+.idea/
+!.gitkeep
+chromedriver
+credentials
+.pytest_cache*
+htmlcov
+.coverage
+.DS_Store

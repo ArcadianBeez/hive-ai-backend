@@ -1,0 +1,46 @@
+[{
+  "id": 1,
+  "user_id": 456,
+  "order_status_id": 3,
+  "created_at": "2024-04-28T12:00:00Z",
+  "updated_at": "2024-04-28T12:30:00Z",
+  "driver_id": null,
+  "order_address_id": 101,
+  "type": "delivery",
+  "received": 1,
+  "latitude_store": "0.345482",
+  "longitude_store": "-78.135601",
+  "latitude_client": "0.363122",
+  "longitude_client": "-78.108215"
+},
+  {
+    "id": 2,
+    "user_id": 323,
+    "order_status_id": 3,
+    "created_at": "2024-04-28T12:00:00Z",
+    "updated_at": "2024-04-28T12:30:00Z",
+    "driver_id": null,
+    "order_address_id": 101,
+    "type": "delivery",
+    "received": 1,
+    "latitude_store": "0.348028",
+    "longitude_store": "-78.124709",
+    "latitude_client": "0.331738",
+    "longitude_client": "-78.120165"
+  },
+  {
+    "id": 3,
+    "user_id": 21,
+    "order_status_id": 3,
+    "created_at": "2024-04-28T12:00:00Z",
+    "updated_at": "2024-04-28T12:30:00Z",
+    "driver_id": null,
+    "order_address_id": 101,
+    "type": "delivery",
+    "received": 1,
+    "latitude_store": "0.349399",
+    "longitude_store": "-78.121010",
+    "latitude_client": "0.336638",
+    "longitude_client": "-78.121952"
+  }
+]
