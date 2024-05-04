@@ -13,6 +13,7 @@ from pydantic import BaseModel
 
 from app.core.gateway.distance_matrix_osm_impl import DistanceMatrixGateway, DistanceMatrixOsmImpl
 from app.core.gateway.hive_backend_impl import HiveBackendGateway, HiveBackendGatewayImpl
+from app.core.gateway.open_ai_impl import OpenAIGateway, OpenAIGatewayImpl
 from app.core.repositories.drivers_location_firebase_repo_impl import DriversLocationRepoFirebaseImpl
 from app.core.repositories.drivers_profile_mysql_repo_impl import DriversProfileMySQLRepoImpl
 from app.core.repositories.models.drivers_location_repo import DriversLocationRepo
@@ -20,6 +21,7 @@ from app.core.repositories.models.drivers_profile_repo import DriversProfileRepo
 from app.core.repositories.models.orders_repo import OrdersRepo
 from app.core.repositories.orders_mysql_repo import OrderMySQLRepoImpl
 from app.logic.assigner.assign_free_orders import AssignFreeOrdersUC, AssignFreeOrdersUCImpl
+from app.logic.query_generator_ai.index import QueryGeneratorAIUC, QueryGeneratorAIUCImpl
 from security.logger_gcp_config import configure_logger as gcp_configure_logger
 
 # 3. Utilities
@@ -31,9 +33,9 @@ logger.add(sys.stdout, level="DEBUG")
 
 class Configuration(BaseModel):
     ENVIRONMENT: str
-    GCP_PROJECT_ID: Optional[str]=None
-    GCP_SECRET_NAME: Optional[str]=None
-    GCP_SECRET_VERSION: Optional[str]=None
+    GCP_PROJECT_ID: Optional[str] = None
+    GCP_SECRET_NAME: Optional[str] = None
+    GCP_SECRET_VERSION: Optional[str] = None
 
 
 def manage_configuration_secrets(configuration: Configuration):
@@ -54,7 +56,7 @@ def manage_configuration_secrets(configuration: Configuration):
 
 
 def new_configuration():
-    environment=config("ENVIRONMENT", default="local")
+    environment = config("ENVIRONMENT", default="local")
 
     configuration = Configuration(ENVIRONMENT=environment)
     if environment != "local":
@@ -98,11 +100,10 @@ def di_configuration(binder, _=new_configuration()):
         api_token=config("HIVE_BACKEND_API_KEY")
     ))
 
-#   repos
+    #   repos
     binder.bind(DriversLocationRepo, DriversLocationRepoFirebaseImpl(ref))
-    binder.bind(OrdersRepo, OrderMySQLRepoImpl(config_db))
-    binder.bind(DriversProfileRepo, DriversProfileMySQLRepoImpl(config_db))
+    binder.bind(OpenAIGateway, OpenAIGatewayImpl(config("OPENAI_API_KEY")))
 
     # LOGIC
     #   use cases
-    binder.bind(AssignFreeOrdersUC, AssignFreeOrdersUCImpl())
+    binder.bind(QueryGeneratorAIUC(), QueryGeneratorAIUCImpl())
