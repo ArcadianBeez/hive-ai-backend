@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Table</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div id="table-container"></div>
+
+<script>
+    // Example array with objects. You can modify this array as needed.
+    var data = [];
+
+    function generateTable(data) {
+        var container = document.getElementById('table-container');
+        var table = document.createElement('table');
+        var thead = document.createElement('thead');
+        var tbody = document.createElement('tbody');
+
+        // Create table header
+        var headerRow = document.createElement('tr');
+        if (data.length > 0) {
+            Object.keys(data[0]).forEach(function (key) {
+                var headerCell = document.createElement('th');
+                headerCell.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+                headerRow.appendChild(headerCell);
+            });
+            thead.appendChild(headerRow);
+        }
+
+        // Create table body
+        data.forEach(function (item) {
+            var row = document.createElement('tr');
+            Object.values(item).forEach(function (value) {
+                var cell = document.createElement('td');
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+            tbody.appendChild(row);
+        });
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        container.appendChild(table);
+    }
+
+    generateTable(data);
+</script>
+</body>
+</html>

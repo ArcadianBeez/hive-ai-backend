@@ -14,13 +14,10 @@ from pydantic import BaseModel
 from app.core.gateway.distance_matrix_osm_impl import DistanceMatrixGateway, DistanceMatrixOsmImpl
 from app.core.gateway.hive_backend_impl import HiveBackendGateway, HiveBackendGatewayImpl
 from app.core.gateway.open_ai_impl import OpenAIGateway, OpenAIGatewayImpl
+from app.core.repositories.all_tables import HiveQueriesRepoImpl
 from app.core.repositories.drivers_location_firebase_repo_impl import DriversLocationRepoFirebaseImpl
-from app.core.repositories.drivers_profile_mysql_repo_impl import DriversProfileMySQLRepoImpl
+from app.core.repositories.models.all_tables_repo import HiveQueriesRepo
 from app.core.repositories.models.drivers_location_repo import DriversLocationRepo
-from app.core.repositories.models.drivers_profile_repo import DriversProfileRepo
-from app.core.repositories.models.orders_repo import OrdersRepo
-from app.core.repositories.orders_mysql_repo import OrderMySQLRepoImpl
-from app.logic.assigner.assign_free_orders import AssignFreeOrdersUC, AssignFreeOrdersUCImpl
 from app.logic.query_generator_ai.index import QueryGeneratorAIUC, QueryGeneratorAIUCImpl
 from security.logger_gcp_config import configure_logger as gcp_configure_logger
 
@@ -101,9 +98,9 @@ def di_configuration(binder, _=new_configuration()):
     ))
 
     #   repos
-    binder.bind(DriversLocationRepo, DriversLocationRepoFirebaseImpl(ref))
+    binder.bind(HiveQueriesRepo, HiveQueriesRepoImpl(config_db))
     binder.bind(OpenAIGateway, OpenAIGatewayImpl(config("OPENAI_API_KEY")))
 
     # LOGIC
     #   use cases
-    binder.bind(QueryGeneratorAIUC(), QueryGeneratorAIUCImpl())
+    binder.bind(QueryGeneratorAIUC, QueryGeneratorAIUCImpl())

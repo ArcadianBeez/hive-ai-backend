@@ -10,11 +10,11 @@ class OpenAIGateway(abc.ABC):
 
 
 class OpenAIGatewayImpl(OpenAIGateway):
-    def __init__(self, api_token: str):
-        self.api_token = api_token
+    def __init__(self, api_key: str):
+        self.api_key = api_key
 
     def get_response_for_question(self, prompt: str, context: str) -> str:
-        client = OpenAI(api_key=self.api_token)
+        client = OpenAI(api_key=self.api_key)
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
