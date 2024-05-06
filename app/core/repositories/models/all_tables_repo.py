@@ -13,6 +13,8 @@ class ResponseHiveData(BaseModel):
         allow_population_by_field_name = True
         extra = "allow"
 
+    def dict(self, **kwargs):
+        return super().dict(exclude={'id'}, **kwargs)
 class HiveQueriesRepo(abc.ABC):
     @abc.abstractmethod
     async def fetch_by_query(self, query: str) -> List[ResponseHiveData]:
