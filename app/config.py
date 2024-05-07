@@ -8,6 +8,7 @@ import firebase_admin
 # 2. Third party imports
 from decouple import config
 from firebase_admin import credentials, db
+from google.cloud import firestore
 from loguru import logger
 from pydantic import BaseModel
 
@@ -15,9 +16,8 @@ from app.core.gateway.distance_matrix_osm_impl import DistanceMatrixGateway, Dis
 from app.core.gateway.hive_backend_impl import HiveBackendGateway, HiveBackendGatewayImpl
 from app.core.gateway.open_ai_impl import OpenAIGateway, OpenAIGatewayImpl
 from app.core.repositories.all_tables import HiveQueriesRepoImpl
-from app.core.repositories.drivers_location_firebase_repo_impl import DriversLocationRepoFirebaseImpl
+from app.core.repositories.cache_firestore_repo_impl import CacheQueriesRepo, CacheFirestoreRepoImpl
 from app.core.repositories.models.all_tables_repo import HiveQueriesRepo
-from app.core.repositories.models.drivers_location_repo import DriversLocationRepo
 from app.logic.query_generator_ai.index import QueryGeneratorAIUC, QueryGeneratorAIUCImpl
 from security.logger_gcp_config import configure_logger as gcp_configure_logger
 
@@ -39,7 +39,7 @@ def manage_configuration_secrets(configuration: Configuration):
     if "local" in configuration.ENVIRONMENT:
         logger.info("Local Configuration. Loading from .env file")
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(config("PROJECT_ROOT"),
-                                                                    "credentials/service_account.json")
+                                                                    "creds/google-creds-phoenix.json")
     elif configuration.ENVIRONMENT in ["staging", "production"]:
         logger.info(f"{configuration.ENVIRONMENT} Configuration. Loading from secret manager")
         # Set common secrets
@@ -88,7 +88,6 @@ def di_configuration(binder, _=new_configuration()):
     firebase_admin.initialize_app(cred, {
         'databaseURL': 'https://phoenix-247205.firebaseio.com/'
     })
-    ref = db.reference('locationsDrivers')
     # CORE
     #   gateways
     binder.bind(DistanceMatrixGateway, DistanceMatrixOsmImpl(config("OSM_BASE_URL")))
@@ -100,7 +99,7 @@ def di_configuration(binder, _=new_configuration()):
     #   repos
     binder.bind(HiveQueriesRepo, HiveQueriesRepoImpl(config_db))
     binder.bind(OpenAIGateway, OpenAIGatewayImpl(config("OPENAI_API_KEY")))
-
+    binder.bind(CacheQueriesRepo, CacheFirestoreRepoImpl(firestore_client=firestore.AsyncClient()))
     # LOGIC
     #   use cases
     binder.bind(QueryGeneratorAIUC, QueryGeneratorAIUCImpl())

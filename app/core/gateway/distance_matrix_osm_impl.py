@@ -28,7 +28,7 @@ class DistanceMatrixOsmImpl(DistanceMatrixGateway):
             response.raise_for_status()  # Raises an HTTPError for bad responses
             json_data = response.json()
 
-            if json_data.get('code') == "Ok":
+            if json_data.get_by_question('code') == "Ok":
                 # Remove the first distance from the main array
                 distances = [element[0] for element in json_data['distances'][1:]]
                 return distances

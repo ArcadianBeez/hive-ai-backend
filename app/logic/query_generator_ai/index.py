@@ -2,9 +2,11 @@ import abc
 import datetime
 import json
 
+
 import inject
 
 from app.core.gateway.open_ai_impl import OpenAIGateway
+from app.core.repositories.cache_firestore_repo_impl import CacheQueriesRepo
 from app.core.repositories.models.all_tables_repo import HiveQueriesRepo
 
 
@@ -17,8 +19,18 @@ class QueryGeneratorAIUC(abc.ABC):
 class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
     hive_queries_repo: HiveQueriesRepo = inject.attr(HiveQueriesRepo)
     openai_gateway: OpenAIGateway = inject.attr(OpenAIGateway)
+    cache_repo: CacheQueriesRepo = inject.attr(CacheQueriesRepo)
 
-    async def execute(self, query: str):
+    async def execute(self, question: str):
+        find_cache = await self.cache_repo.get_by_question(question)
+
+        if find_cache:
+            data_response = await self.hive_queries_repo.fetch_by_query(find_cache.query)
+            return {
+                "hash": find_cache.hash,
+                "data_result": data_response
+            }
+
         context = self.read_file("app/logic/query_generator_ai/orders_context.md")
         considerations = self.read_file("app/logic/query_generator_ai/orders_considerations.md")
         data_tables_template = self.read_file("app/logic/query_generator_ai/templates/data_tables.html")
@@ -27,18 +39,19 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
         current_year = datetime.datetime.now().year
         considerations_str = self.build_query_considerations(current_year)
 
-        prompt = f"Generate a query based on the following question: {query}\nand you should consider the following points: {considerations_str}"
+        prompt = f"Generate a query based on the following question: {question}\nand you should consider the following points: {considerations_str}"
         generated_query = self.generate_query(prompt, context_str)
-
         print(generated_query)
 
         if not self.is_valid_query(generated_query):
             return "Invalid query generated, please try again."
 
         data_response = await self.hive_queries_repo.fetch_by_query(generated_query)
-        response_html = self.build_response_html(data_tables_template, data_response)
-        self.save_html(response_html)
-        return response_html
+        saved_hash = await self.cache_repo.save(question, generated_query)
+        return {
+            "hash": saved_hash,
+            "data_result": data_response
+        }
 
     def read_file(self, file_path):
         with open(file_path) as file:
