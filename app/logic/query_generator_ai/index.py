@@ -2,7 +2,6 @@ import abc
 import datetime
 import json
 
-
 import inject
 
 from app.core.gateway.open_ai_impl import OpenAIGateway
@@ -28,7 +27,7 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
             data_response = await self.hive_queries_repo.fetch_by_query(find_cache.query)
             return {
                 "hash": find_cache.hash,
-                "data_result": data_response
+                "data_result": [response.dict() for response in data_response]
             }
 
         context = self.read_file("app/logic/query_generator_ai/orders_context.md")
@@ -50,7 +49,7 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
         saved_hash = await self.cache_repo.save(question, generated_query)
         return {
             "hash": saved_hash,
-            "data_result": data_response
+            "data_result": [response.dict() for response in data_response]
         }
 
     def read_file(self, file_path):
@@ -58,16 +57,25 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
             return file.read()
 
     def build_query_considerations(self, current_year):
+        current_date = datetime.datetime.now().date()
         return (
-            "-ever return the SQL query only as answer, "
-            "-ever use LIMIT 20, "
-            "-when query includes a name ever use LIKE %%, "
-            "-ever use the column name in the select clause, "
-            "-ever put the table name in select and where clause, "
-            "-ever convert the dates output to string, "
-            "-created_at and updated_at could be ambiguous, so use the table name before the column name, "
-            f"when query does not specify the year of the date, use {current_year} as default year."
-            "ever put name accord query of the columns in the select clause with spaces as normal label, "
+                "-ever include id of the main table in the select clause, "
+                "ever include name of restaurant or driver when query ask for delivery or store"
+                "-ever return the SQL query only as answer, "
+                "-ever use LIMIT 20, "
+                "-when query includes a name ever use LIKE %%, "
+                "-ever use the column name in the select clause, "
+                "-ever put the table name in select and where clause, "
+                "-ever convert the dates output to string, "
+                "-ever not include names or id when query require a sum of all"
+                "-created_at and updated_at could be ambiguous, so use the table name before the column name, "
+                f"when query does not specify the year of the date, use {current_year} as default year."
+                "ever put name accord query of the columns in the select clause with spaces as normal label, "
+                "when query said some of number or numero, use count() function, "
+                "when query said some ranking use sum() function, "
+                "when query indicates a date today use:" + str(current_date)
+
+
         )
 
     def generate_query(self, prompt, context_str):
