@@ -75,7 +75,6 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
                 "when query said some ranking use sum() function, "
                 "when query indicates a date today use:" + str(current_date)
 
-
         )
 
     def generate_query(self, prompt, context_str):

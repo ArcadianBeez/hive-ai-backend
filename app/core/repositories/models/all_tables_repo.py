@@ -5,8 +5,16 @@ from typing import Optional, List
 
 from pydantic import BaseModel, Field
 
+default_actions = [
+    {"label": "Detallar", "path": "/more_info", "type": ""},
+    {"label": "Exportar", "path": "/export", "type": ""},
+    {"label": "Graficos", "path": "/graphics", "type": ""},
+]
+
+
 class ResponseHiveData(BaseModel):
     id: int = Field(None, alias='id')
+    actions: Optional[List[dict]] = Field(default_actions, alias='actions')
 
     class Config:
         orm_mode = True
