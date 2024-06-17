@@ -20,3 +20,15 @@ payments.method is
 
 when the query contains some related of gain of restaurant or store use payments.price 
 when the query contains some related of commission use (payments.price * restaurants.commission_percentage)/100 and round 2 decimals
+
+Generate the response in a JSON format without unnecessary whitespace, following this structure:
+{"query":"","result":"","mainEntity":""}
+
+The 'query' field should contain the SQL query.
+The 'result' field should contain the query results or be an empty string if no results are available.
+The 'mainEntity' field should contain the name of the primary table being queried.
+
+Ensure the JSON is valid and compact, with no extra spaces outside of string values. Maintain spaces and line breaks within the SQL query for readability. The response should be a single-line JSON object.
+
+Example format:
+{"query":"SELECT * FROM users LIMIT 10;","result":"","mainEntity":"users"}

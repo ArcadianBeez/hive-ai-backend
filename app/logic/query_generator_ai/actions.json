@@ -1,0 +1,122 @@
+{
+  "orders": {
+    "actionsOne": [
+      {
+        "label": "Detalle del pedido",
+        "path": "/orders/detail"
+      },
+      {
+        "label": "Actualizar estado",
+        "path": "/orders/update-status"
+      },
+      {
+        "label": "Asignar repartidor",
+        "path": "/orders/assign-driver"
+      }
+    ],
+    "actionsMany": [
+      {
+        "label": "Resumen de ventas",
+        "path": "/orders/sales-summary"
+      },
+      {
+        "label": "Pedidos pendientes",
+        "path": "/orders/pending"
+      },
+      {
+        "label": "Historial de pedidos",
+        "path": "/orders/history"
+      }
+    ]
+  },
+  "users": {
+    "actionsOne": [
+      {
+        "label": "Perfil de usuario",
+        "path": "/users/profile"
+      },
+      {
+        "label": "Editar información",
+        "path": "/users/edit"
+      },
+      {
+        "label": "Historial de compras",
+        "path": "/users/purchase-history"
+      }
+    ],
+    "actionsMany": [
+      {
+        "label": "Clientes frecuentes",
+        "path": "/users/frequent"
+      },
+      {
+        "label": "Usuarios nuevos",
+        "path": "/users/new"
+      },
+      {
+        "label": "Gestión de roles",
+        "path": "/users/role-management"
+      }
+    ]
+  },
+  "restaurants": {
+    "actionsOne": [
+      {
+        "label": "Menú del restaurante",
+        "path": "/restaurants/menu"
+      },
+      {
+        "label": "Editar información",
+        "path": "/restaurants/edit"
+      },
+      {
+        "label": "Gestión de horarios",
+        "path": "/restaurants/schedule"
+      }
+    ],
+    "actionsMany": [
+      {
+        "label": "Rendimiento por restaurante",
+        "path": "/restaurants/performance"
+      },
+      {
+        "label": "Calificaciones y reseñas",
+        "path": "/restaurants/reviews"
+      },
+      {
+        "label": "Restaurantes populares",
+        "path": "/restaurants/popular"
+      }
+    ]
+  },
+  "payments": {
+    "actionsOne": [
+      {
+        "label": "Detalle de transacción",
+        "path": "/payments/transaction-detail"
+      },
+      {
+        "label": "Emitir reembolso",
+        "path": "/payments/refund"
+      },
+      {
+        "label": "Actualizar método de pago",
+        "path": "/payments/update-method"
+      }
+    ],
+    "actionsMany": [
+      {
+        "label": "Resumen de ingresos",
+        "path": "/payments/income-summary"
+      },
+      {
+        "label": "Transacciones recientes",
+        "path": "/payments/recent"
+      },
+      {
+        "label": "Reportes financieros",
+        "path": "/payments/financial-reports"
+      }
+    ]
+  }
+}

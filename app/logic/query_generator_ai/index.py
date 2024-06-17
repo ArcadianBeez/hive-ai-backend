@@ -1,6 +1,7 @@
 import abc
 import datetime
 import json
+import re
 
 import inject
 
@@ -29,10 +30,8 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
                 "hash": find_cache.hash,
                 "data_result": [response.dict() for response in data_response]
             }
-
         context = self.read_file("app/logic/query_generator_ai/orders_context.md")
         considerations = self.read_file("app/logic/query_generator_ai/orders_considerations.md")
-        data_tables_template = self.read_file("app/logic/query_generator_ai/templates/data_tables.html")
 
         context_str = f"my tables is this: {context} and you should consider the following: {considerations}"
         current_year = datetime.datetime.now().year
@@ -41,16 +40,43 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
         prompt = f"Generate a query based on the following question: {question}\nand you should consider the following points: {considerations_str}"
         generated_query = self.generate_query(prompt, context_str)
         print(generated_query)
+        cleaned_json = self.clean_and_parse_json(generated_query)
+        if cleaned_json is None:
+            return "Invalid query generated, please try again."
+        print(cleaned_json)
 
-        if not self.is_valid_query(generated_query):
+        if not self.is_valid_query(cleaned_json['query']):
             return "Invalid query generated, please try again."
 
-        data_response = await self.hive_queries_repo.fetch_by_query(generated_query)
-        saved_hash = await self.cache_repo.save(question, generated_query)
+        data_response = await self.hive_queries_repo.fetch_by_query(cleaned_json['query'])
+        actions = self.get_actions_by_entity(cleaned_json['mainEntity'])
+        saved_hash = await self.cache_repo.save(question, cleaned_json['query'])
         return {
             "hash": saved_hash,
-            "data_result": [response.dict() for response in data_response]
+            "data_result": [response.dict() for response in data_response],
+            "actions": actions,
         }
+
+    def get_actions_by_entity(self, entity):
+        actions = self.read_file("app/logic/query_generator_ai/actions.json")
+        actions_json = self.clean_and_parse_json(actions)
+        actions = actions_json.get(entity, [])
+        return actions
+
+    def clean_and_parse_json(self, text):
+        print("text")
+        print(text)
+        # Eliminar espacios en blanco y tabulaciones
+        cleaned_text = re.sub(r'\s*([{:,}\[\]])\s*', r'\1', text)
+        print("text cleaned")
+        print(cleaned_text)
+        try:
+            # Intentar analizar el texto como JSON
+            json_data = json.loads(cleaned_text)
+            return json_data
+        except json.JSONDecodeError as e:
+            print(f"Error al analizar JSON: {e}")
+            return None
 
     def read_file(self, file_path):
         with open(file_path) as file:

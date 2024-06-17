@@ -16,10 +16,12 @@ class OpenAIGatewayImpl(OpenAIGateway):
     def get_response_for_question(self, prompt: str, context: str) -> str:
         client = OpenAI(api_key=self.api_key)
         completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o",
+            response_format={"type": "json_object"},
             messages=[
                 {"role": "system", "content": context},
-                {"role": "user", "content": prompt}
+                {"role": "user", "content": prompt},
+
             ]
         )
         return completion.choices[0].message.content
