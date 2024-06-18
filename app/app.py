@@ -19,6 +19,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.include_router(app_router, prefix="/api/v1")
 
 ALLOWED_ORIGINS = '*'  # or 'foo.com', etc.
+
 logger.info("Hello World!")
 
 
@@ -28,7 +29,7 @@ async def preflight_handler(request: Request, rest_of_path: str) -> Response:
     response = Response()
     response.headers['Access-Control-Allow-Origin'] = ALLOWED_ORIGINS
     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, DELETE, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
+    response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, Api-Key'
     return response
 
 
@@ -38,7 +39,7 @@ async def add_CORS_header(request: Request, call_next):
     response = await call_next(request)
     response.headers['Access-Control-Allow-Origin'] = ALLOWED_ORIGINS
     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
+    response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type , Api-Key'
     return response
 
 
@@ -47,7 +48,7 @@ async def add_CORS_header_500(request: Request, call_next):
     response = JSONResponse(content={"detail": "something went wrong :("}, status_code=500)
     response.headers['Access-Control-Allow-Origin'] = ALLOWED_ORIGINS
     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
+    response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type , Api-Key'
     return response
 
 
