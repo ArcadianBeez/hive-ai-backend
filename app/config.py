@@ -7,17 +7,20 @@ from typing import Optional
 import firebase_admin
 # 2. Third party imports
 from decouple import config
-from firebase_admin import credentials, db
+from firebase_admin import credentials
 from google.cloud import firestore
 from loguru import logger
 from pydantic import BaseModel
 
+from app.core.gateway.auth_backend_impl import AuthBackendGateway, AuthBackendGatewayImpl
 from app.core.gateway.distance_matrix_osm_impl import DistanceMatrixGateway, DistanceMatrixOsmImpl
 from app.core.gateway.hive_backend_impl import HiveBackendGateway, HiveBackendGatewayImpl
 from app.core.gateway.open_ai_impl import OpenAIGateway, OpenAIGatewayImpl
 from app.core.repositories.all_tables import HiveQueriesRepoImpl
 from app.core.repositories.cache_firestore_repo_impl import CacheQueriesRepo, CacheFirestoreRepoImpl
 from app.core.repositories.models.all_tables_repo import HiveQueriesRepo
+from app.logic.auth.login_whatsapp import LoginWhatsAppUC, LoginWhatsAppUCImpl
+from app.logic.auth.phone_verification_whatsapp import PhoneVerificationWhatsAppUC, PhoneVerificationWhatsAppUCImpl
 from app.logic.query_generator_ai.index import QueryGeneratorAIUC, QueryGeneratorAIUCImpl
 from security.logger_gcp_config import configure_logger as gcp_configure_logger
 
@@ -90,11 +93,15 @@ def di_configuration(binder, _=new_configuration()):
     })
     # CORE
     #   gateways
+    binder.bind(AuthBackendGateway, AuthBackendGatewayImpl(
+        base_url=config("HIVE_BACKEND_URL"),
+    ))
     binder.bind(DistanceMatrixGateway, DistanceMatrixOsmImpl(config("OSM_BASE_URL")))
     binder.bind(HiveBackendGateway, HiveBackendGatewayImpl(
         base_url=config("HIVE_BACKEND_URL"),
         api_token=config("HIVE_BACKEND_API_KEY")
     ))
+
 
     #   repos
     binder.bind(HiveQueriesRepo, HiveQueriesRepoImpl(config_db))
@@ -103,3 +110,5 @@ def di_configuration(binder, _=new_configuration()):
     # LOGIC
     #   use cases
     binder.bind(QueryGeneratorAIUC, QueryGeneratorAIUCImpl())
+    binder.bind(PhoneVerificationWhatsAppUC, PhoneVerificationWhatsAppUCImpl())
+    binder.bind(LoginWhatsAppUC, LoginWhatsAppUCImpl())
