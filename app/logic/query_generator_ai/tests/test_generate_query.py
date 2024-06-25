@@ -32,6 +32,5 @@ async def test_generate_query(inject_live_config):
     query_generator = QueryGeneratorAIUCImpl()
     instruction = "Cuales son las ventas de hoy?"
     generated_query = await query_generator.execute(instruction)
-    print(generated_query)
     assert generated_query is not None  # Or other appropriate assertions
 

@@ -46,6 +46,6 @@ def verify_life_token(token: str):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except jwt.ExpiredSignatureError:
-        raise TokenExpiredError("El token ha expirado")
+        raise TokenExpiredError("expired_token")
     except jwt.InvalidTokenError:
-        raise InvalidTokenError("El token es inválido")
+        raise InvalidTokenError("invalid_token")

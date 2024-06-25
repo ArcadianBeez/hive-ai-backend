@@ -18,10 +18,10 @@ class LoginWhatsAppUCImpl(LoginWhatsAppUC):
     async def execute(self, phone_number: str, code: str):
         try:
             response = await self.auth_gateway.login_whatsapp(phone_number, code)
-            if response.get("status") == "success":
-                tokens = generate_auth_tokens(response.get("user_id"))
-                response["tokens"] = tokens
-            return response
+            if response.get("success"):
+                tokens = generate_auth_tokens(response.get("api_token"))
+                return {"success": True, **tokens}
+            else:
+                return {"success": False, "message": "Invalid phone number or code"}
         except Exception as e:
-            return {"status": "error", "message": str(e)}
-
+            return {"status": False, "message": str(e)}

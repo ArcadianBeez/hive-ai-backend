@@ -39,11 +39,11 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
 
         prompt = f"Generate a query based on the following question: {question}\nand you should consider the following points: {considerations_str}"
         generated_query = self.generate_query(prompt, context_str)
-        print(generated_query)
+
         cleaned_json = self.clean_and_parse_json(generated_query)
         if cleaned_json is None:
             return "Invalid query generated, please try again."
-        print(cleaned_json)
+
 
         if not self.is_valid_query(cleaned_json['query']):
             return "Invalid query generated, please try again."
@@ -64,12 +64,10 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
         return actions
 
     def clean_and_parse_json(self, text):
-        print("text")
-        print(text)
+
         # Eliminar espacios en blanco y tabulaciones
         cleaned_text = re.sub(r'\s*([{:,}\[\]])\s*', r'\1', text)
-        print("text cleaned")
-        print(cleaned_text)
+
         try:
             # Intentar analizar el texto como JSON
             json_data = json.loads(cleaned_text)

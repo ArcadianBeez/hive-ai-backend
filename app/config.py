@@ -21,6 +21,7 @@ from app.core.repositories.cache_firestore_repo_impl import CacheQueriesRepo, Ca
 from app.core.repositories.models.all_tables_repo import HiveQueriesRepo
 from app.logic.auth.login_whatsapp import LoginWhatsAppUC, LoginWhatsAppUCImpl
 from app.logic.auth.phone_verification_whatsapp import PhoneVerificationWhatsAppUC, PhoneVerificationWhatsAppUCImpl
+from app.logic.auth.refresh_token import RefreshTokenUC, RefreshTokenUCImpl
 from app.logic.query_generator_ai.index import QueryGeneratorAIUC, QueryGeneratorAIUCImpl
 from security.logger_gcp_config import configure_logger as gcp_configure_logger
 
@@ -112,3 +113,4 @@ def di_configuration(binder, _=new_configuration()):
     binder.bind(QueryGeneratorAIUC, QueryGeneratorAIUCImpl())
     binder.bind(PhoneVerificationWhatsAppUC, PhoneVerificationWhatsAppUCImpl())
     binder.bind(LoginWhatsAppUC, LoginWhatsAppUCImpl())
+    binder.bind(RefreshTokenUC, RefreshTokenUCImpl())

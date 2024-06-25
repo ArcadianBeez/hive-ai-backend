@@ -23,5 +23,4 @@ async def test_login_with_whatsapp(inject_live_config):
     phone = "+593989778128"
     code = "943250"
     response = await uc.execute(phone, code)
-    print(response)
     assert response is not None

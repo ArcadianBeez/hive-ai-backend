@@ -10,5 +10,5 @@ async def test_get_response_for_question():
     context = "You are a helpful calculator assistant."
     prompt = "What is the sum of 2, 3, and 4?"
     response = openai_gateway.get_response_for_question(prompt, context)
-    print(response)
+
     assert response is not None  # Or other appropriate assertions

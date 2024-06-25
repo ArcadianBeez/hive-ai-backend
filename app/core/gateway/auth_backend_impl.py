@@ -24,6 +24,7 @@ class AuthBackendGatewayImpl(AuthBackendGateway):
             "number": phone,
             "type": "whatsapp"
         }
+
         client = httpx.AsyncClient(verify=False)
         try:
             response = await client.post(
@@ -50,6 +51,7 @@ class AuthBackendGatewayImpl(AuthBackendGateway):
             "code": code,
             "number": phone
         }
+
         client = httpx.AsyncClient(verify=False)
         try:
             response = await client.post(
