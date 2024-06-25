@@ -14,7 +14,7 @@ api_key_scheme = APIKeyHeader(name="API-KEY", auto_error=False)
 
 def verify_auth(
         request: Request):
-    token_service =  inject.attr(JWTTokenManager)
+    token_service = inject.attr(JWTTokenManager)
     api_key = request.headers.get("api-key")
     auth_header = request.headers.get("Authorization")
     bearer = None
