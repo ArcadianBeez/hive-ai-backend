@@ -1,9 +1,8 @@
 import abc
 
-from fastapi import HTTPException
-from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_406_NOT_ACCEPTABLE
+import inject
 
-from security.jwt_token_manager import verify_life_token, generate_auth_tokens, InvalidTokenError, TokenExpiredError
+from security.jwt_token_manager import JWTTokenManager
 
 
 class RefreshTokenUC(abc.ABC):
@@ -13,10 +12,11 @@ class RefreshTokenUC(abc.ABC):
 
 
 class RefreshTokenUCImpl(RefreshTokenUC):
+    jwt_token_manager: JWTTokenManager = inject.attr(JWTTokenManager)
 
     async def execute(self, token: str):
         try:
-            payload = verify_life_token(token)
-            return generate_auth_tokens(payload.get("uii"))
+            payload = self.jwt_token_manager.verify_life_token(token)
+            return self.jwt_token_manager.generate_auth_tokens(payload.get("uii"))
         except Exception as e:
             raise e

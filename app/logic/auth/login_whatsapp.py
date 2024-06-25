@@ -3,7 +3,7 @@ import abc
 import inject
 
 from app.core.gateway.auth_backend_impl import AuthBackendGateway
-from security.jwt_token_manager import generate_auth_tokens
+from security.jwt_token_manager import JWTTokenManager
 
 
 class LoginWhatsAppUC(abc.ABC):
@@ -14,12 +14,13 @@ class LoginWhatsAppUC(abc.ABC):
 
 class LoginWhatsAppUCImpl(LoginWhatsAppUC):
     auth_gateway: AuthBackendGateway = inject.attr(AuthBackendGateway)
+    jwt_token_manager: JWTTokenManager = inject.attr(JWTTokenManager)
 
     async def execute(self, phone_number: str, code: str):
         try:
             response = await self.auth_gateway.login_whatsapp(phone_number, code)
             if response.get("success"):
-                tokens = generate_auth_tokens(response.get("api_token"))
+                tokens = self.jwt_token_manager.generate_auth_tokens(response.get("api_token"))
                 return {"success": True, **tokens}
             else:
                 return {"success": False, "message": "Invalid phone number or code"}

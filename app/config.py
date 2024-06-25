@@ -23,6 +23,7 @@ from app.logic.auth.login_whatsapp import LoginWhatsAppUC, LoginWhatsAppUCImpl
 from app.logic.auth.phone_verification_whatsapp import PhoneVerificationWhatsAppUC, PhoneVerificationWhatsAppUCImpl
 from app.logic.auth.refresh_token import RefreshTokenUC, RefreshTokenUCImpl
 from app.logic.query_generator_ai.index import QueryGeneratorAIUC, QueryGeneratorAIUCImpl
+from security.jwt_token_manager import JWTTokenManager, JWTTokenManagerImpl
 from security.logger_gcp_config import configure_logger as gcp_configure_logger
 
 # 3. Utilities
@@ -103,6 +104,8 @@ def di_configuration(binder, _=new_configuration()):
         api_token=config("HIVE_BACKEND_API_KEY")
     ))
 
+    # services
+    binder.bind(JWTTokenManager, JWTTokenManagerImpl(secret_key=config("HIVE_BACKEND_API_KEY")))
 
     #   repos
     binder.bind(HiveQueriesRepo, HiveQueriesRepoImpl(config_db))
