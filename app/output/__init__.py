@@ -6,5 +6,4 @@ from security.auth_validator import verify_auth
 
 app_router = APIRouter()
 app_router.include_router(auth_router, prefix="/auth", tags=["Auth"])
-app_router.include_router(order_assigner_router, prefix="/queries", tags=["Queries"],
-                          dependencies=[Depends(verify_auth)])
+app_router.include_router(order_assigner_router, prefix="/queries", tags=["Queries"])

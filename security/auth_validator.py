@@ -5,7 +5,7 @@ from fastapi import Security, HTTPException, Depends, Request
 from fastapi.security import HTTPBearer, APIKeyHeader, HTTPAuthorizationCredentials
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_406_NOT_ACCEPTABLE, HTTP_404_NOT_FOUND
 
-from security.jwt_token_manager import verify_life_token, TokenExpiredError, InvalidTokenError
+from security.jwt_token_manager import TokenExpiredError, InvalidTokenError
 
 jwt_scheme = HTTPBearer()
 api_key_scheme = APIKeyHeader(name="API-KEY", auto_error=False)
