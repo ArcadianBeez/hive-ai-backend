@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends
 from app.core.repositories.cache_firestore_repo_impl import CacheQueriesRepo
 from app.logic.query_generator_ai.index import QueryGeneratorAIUC
 from security.auth_validator import verify_auth
-from security.key_validator import validate_apikey_request
 
 order_assigner_router = APIRouter()
 
