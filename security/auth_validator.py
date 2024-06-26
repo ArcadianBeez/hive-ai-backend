@@ -1,12 +1,9 @@
-from typing import Optional
-
-import inject
 from decouple import config
 from fastapi import Security, HTTPException, Depends, Request
 from fastapi.security import HTTPBearer, APIKeyHeader, HTTPAuthorizationCredentials
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_406_NOT_ACCEPTABLE, HTTP_404_NOT_FOUND
 
-from security.jwt_token_manager import TokenExpiredError, InvalidTokenError, JWTTokenManager
+from security.jwt_token_manager import TokenExpiredError, InvalidTokenError, JWTTokenManagerImpl
 
 jwt_scheme = HTTPBearer()
 api_key_scheme = APIKeyHeader(name="API-KEY", auto_error=False)
@@ -14,7 +11,7 @@ api_key_scheme = APIKeyHeader(name="API-KEY", auto_error=False)
 
 def verify_auth(
         request: Request):
-    token_service = inject.attr(JWTTokenManager)
+    token_service = JWTTokenManagerImpl(config("HIVE_BACKEND_API_KEY"))
     api_key = request.headers.get("api-key")
     auth_header = request.headers.get("Authorization")
     bearer = None
