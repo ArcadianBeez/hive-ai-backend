@@ -12,7 +12,7 @@ from app.core.repositories.models.all_tables_repo import HiveQueriesRepo
 
 class QueryGeneratorAIUC(abc.ABC):
     @abc.abstractmethod
-    def execute(self, query: str):
+    def execute(self, query: str, city: int):
         pass
 
 
@@ -21,7 +21,7 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
     openai_gateway: OpenAIGateway = inject.attr(OpenAIGateway)
     cache_repo: CacheQueriesRepo = inject.attr(CacheQueriesRepo)
 
-    async def execute(self, question: str):
+    async def execute(self, question: str, city: int):
         find_cache = await self.cache_repo.get_by_question(question)
 
         if find_cache:
@@ -37,13 +37,14 @@ class QueryGeneratorAIUCImpl(QueryGeneratorAIUC):
         current_year = datetime.datetime.now().year
         considerations_str = self.build_query_considerations(current_year)
 
-        prompt = f"Generate a query based on the following question: {question}\nand you should consider the following points: {considerations_str}"
+        prompt = (f"Generate a query based on the following question: {question} \n"
+                  f"and considering the city with id {city}\n"
+                  f"and you should consider the following points: {considerations_str}")
         generated_query = self.generate_query(prompt, context_str)
 
         cleaned_json = self.clean_and_parse_json(generated_query)
         if cleaned_json is None:
             return "Invalid query generated, please try again."
-
 
         if not self.is_valid_query(cleaned_json['query']):
             return "Invalid query generated, please try again."

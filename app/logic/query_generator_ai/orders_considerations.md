@@ -8,10 +8,12 @@ order_status_id is
 - 7 canceled, 
 for get info of restaurant make join with restaurants table
 for get info of user make join with users table
+for get info of restaurant city make join with restaurants_city table
 when the query question for gain of a person thats refer to driver 
 when the query question for gain of a store or similar is refer to restaurant
 when the query question includes sales for restaurants ever verify restaurants.status is 1
 when the query contains some related of payment method should make join with payments
+when the query contains some related of city should make join with restaurant_city
 
 payments.method is
 - TRANSFER

@@ -64,7 +64,9 @@ status varchar(191) ,
 method varchar(191) ,
 observations varchar(500) 
 
-
+--restaurants_city--
+restaurants_id int unsigned not null,
+city_id        int unsigned not null
 
 
 
